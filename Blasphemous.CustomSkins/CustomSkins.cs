@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 namespace Blasphemous.CustomSkins;
@@ -43,53 +44,40 @@ internal class CustomSkins : BlasMod
 
     public void LoadCustomSkins()
     {
-        Dictionary<string, Sprite> skinData = LoadSkins();
-
-        foreach (string skinText in skinData.Keys)
+        foreach (SkinInfo info in LoadAllSkins())
         {
-            SkinInfo skinInfo = JsonConvert.DeserializeObject<SkinInfo>(skinText);
-            if (_customSkins.ContainsKey(skinInfo.id))
+            if (_customSkins.ContainsKey(info.id))
             {
-                LogWarning($"Rejecting duplicate skin: {skinInfo.id}");
+                LogWarning($"Rejecting duplicate skin: {info.id}");
                 continue;
             }
 
-            skinInfo.texture = skinData[skinText];
-            _customSkins.Add(skinInfo.id, skinInfo);
-            Log($"Loading custom skin: {skinInfo.id} by {skinInfo.author}");
+            _customSkins.Add(info.id, info);
+            Log($"Loading custom skin: {info.id} by {info.author}");
         }
     }
 
-    internal Dictionary<string, Sprite> LoadSkins()
+    private IEnumerable<SkinInfo> LoadAllSkins()
     {
         string skinsPath = Path.GetFullPath("Modding/skins/");
-        Dictionary<string, Sprite> customSkins = new Dictionary<string, Sprite>();
-        string[] skinFolders = Directory.GetDirectories(skinsPath);
-
-        for (int i = 0; i < skinFolders.Length; i++)
-        {
-            if (GetSkinFiles(skinFolders[i], out string skinInfo, out Sprite skinTexture))
-            {
-                if (!customSkins.ContainsKey(skinInfo))
-                    customSkins.Add(skinInfo, skinTexture);
-            }
-        }
-
-        return customSkins;
+        return Directory.GetDirectories(skinsPath).Select(LoadSkin);
     }
 
-    private bool GetSkinFiles(string path, out string skinInfo, out Sprite skinTexture)
+    private SkinInfo LoadSkin(string path)
     {
-        skinInfo = null; skinTexture = null;
-        if (!File.Exists(path + "/info.txt") || !File.Exists(path + "/texture.png")) return false;
+        if (!File.Exists(path + "/info.txt") || !File.Exists(path + "/texture.png"))
+            return null;
 
-        skinInfo = File.ReadAllText(path + "/info.txt");
+        string text = File.ReadAllText(path + "/info.txt");
         byte[] bytes = File.ReadAllBytes(path + "/texture.png");
+
         Texture2D tex = new Texture2D(256, 1, TextureFormat.ARGB32, false);
         tex.LoadImage(bytes);
         tex.filterMode = FilterMode.Point;
-        skinTexture = Sprite.Create(tex, new Rect(0, 0, 256, 1), new Vector2(0.5f, 0.5f));
 
-        return true;
+        SkinInfo info = JsonConvert.DeserializeObject<SkinInfo>(text);
+        info.texture = Sprite.Create(tex, new Rect(0, 0, 256, 1), new Vector2(0.5f, 0.5f));
+
+        return info;
     }
 }
