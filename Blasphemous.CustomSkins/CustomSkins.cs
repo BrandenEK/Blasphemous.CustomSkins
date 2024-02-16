@@ -7,42 +7,48 @@ using UnityEngine;
 
 namespace Blasphemous.CustomSkins;
 
-internal class CustomSkins : BlasMod
+/// <summary>
+/// Handles loading skins and adding them to the UI selection
+/// </summary>
+public class CustomSkins : BlasMod
 {
-    public CustomSkins() : base(ModInfo.MOD_ID, ModInfo.MOD_NAME, ModInfo.MOD_AUTHOR, ModInfo.MOD_VERSION) { }
+    internal CustomSkins() : base(ModInfo.MOD_ID, ModInfo.MOD_NAME, ModInfo.MOD_AUTHOR, ModInfo.MOD_VERSION) { }
 
+    /// <summary>
+    /// Registers handlers
+    /// </summary>
     protected override void OnInitialize()
     {
         LocalizationHandler.RegisterDefaultLanguage("en");
     }
 
-    public bool AllowedSkinButtons { get; private set; }
+    internal bool AllowedSkinButtons { get; private set; }
 
     private readonly Dictionary<string, SkinInfo> _customSkins = new();
     private readonly List<GameObject> _skinButtons = new();
 
-    public void AddSkinButton(GameObject obj)
+    internal void AddSkinButton(GameObject obj)
     {
         _skinButtons.Add(obj);
     }
 
-    public List<GameObject> AllowSkinButtons()
+    internal List<GameObject> AllowSkinButtons()
     {
         AllowedSkinButtons = true;
         return _skinButtons;
     }
 
-    public SkinInfo GetSkinInfo(string id)
+    internal SkinInfo GetSkinInfo(string id)
     {
         return _customSkins.TryGetValue(id, out var info) ? info : null;
     }
 
-    public IEnumerable<SkinInfo> GetAllSkinInfos()
+    internal IEnumerable<SkinInfo> GetAllSkinInfos()
     {
         return _customSkins.Values;
     }
 
-    public void LoadCustomSkins()
+    internal void LoadCustomSkins()
     {
         foreach (SkinInfo info in LoadAllSkins())
         {
