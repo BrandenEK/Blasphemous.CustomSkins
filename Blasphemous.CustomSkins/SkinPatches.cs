@@ -12,7 +12,7 @@ using UnityEngine.UI;
 namespace Blasphemous.CustomSkins;
 
 // Load custom skins from folder
-[HarmonyPatch(typeof(ColorPaletteManager), "Initialize")]
+[HarmonyPatch(typeof(ColorPaletteManager), nameof(ColorPaletteManager.Initialize))]
 class ColorPaletteManagerInit_Patch
 {
     public static void Postfix(ColorPaletteDictionary ___palettes, Dictionary<string, bool> ___palettesStates)
@@ -34,7 +34,7 @@ class ColorPaletteManagerInit_Patch
 }
 
 // Create menu options for custom skins
-[HarmonyPatch(typeof(ExtrasMenuWidget), "Awake")]
+[HarmonyPatch(typeof(ExtrasMenuWidget), nameof(ExtrasMenuWidget.Awake))]
 class ExtrasMenuWidget_Patch
 {
     public static void Postfix(List<string> ___allSkins, List<ExtrasMenuWidget.SkinSelectorElement> ___skinSelectorDataElements, List<ExtrasMenuWidget.SkinSelectorElement> ___skinSelectorSelectionElements)
@@ -109,7 +109,7 @@ class ExtrasMenuWidget_Patch
 }
 
 // Add custom skins button allowed focus objects
-[HarmonyPatch(typeof(KeepFocus), "Update")]
+[HarmonyPatch(typeof(KeepFocus), nameof(KeepFocus.Update))]
 class KeepFocusSkins_Patch
 {
     public static void Prefix(KeepFocus __instance, List<GameObject> ___allowedObjects)
@@ -123,7 +123,7 @@ class KeepFocusSkins_Patch
 }
 
 // Display creator of each skin
-[HarmonyPatch(typeof(ExtrasMenuWidget), "Option_OnSelectSkin")]
+[HarmonyPatch(typeof(ExtrasMenuWidget), nameof(ExtrasMenuWidget.Option_OnSelectSkin))]
 class SelectSkin_Patch
 {
     public static bool Prefix(ExtrasMenuWidget __instance, int idx, List<string> ___allSkins)
@@ -137,7 +137,7 @@ class SelectSkin_Patch
 }
 
 // Use default skin if custom one is removed
-[HarmonyPatch(typeof(ColorPaletteManager), "GetCurrentColorPaletteId")]
+[HarmonyPatch(typeof(ColorPaletteManager), nameof(ColorPaletteManager.GetCurrentColorPaletteId))]
 class ColorPaletteManagerGet_Patch
 {
     public static void Postfix(ColorPaletteManager __instance, ColorPaletteDictionary ___palettes, ref string __result)
