@@ -54,12 +54,12 @@ public class CustomSkins : BlasMod
         {
             if (_customSkins.ContainsKey(info.id))
             {
-                LogWarning($"Rejecting duplicate skin: {info.id}");
+                ModLog.Warn($"Rejecting duplicate skin: {info.id}");
                 continue;
             }
 
             _customSkins.Add(info.id, info);
-            Log($"Loading custom skin: {info.id} by {info.author}");
+            ModLog.Info($"Loading custom skin: {info.id} by {info.author}");
         }
     }
 
