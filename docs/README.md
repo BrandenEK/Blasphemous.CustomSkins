@@ -8,5 +8,6 @@
 - Custom skins will be loaded from the "Modding/skins" folder.  They can be created using the [Skin Editor](https://github.com/BrandenEK/Blasphemous.Modding.SkinEditor).
 
 ## Installation
-This mod is available for download through the [Blasphemous Mod Installer](https://github.com/BrandenEK/Blasphemous.Modding.Installer)
-- Required dependencies: Modding API
+This mod is available for download through the [Blasphemous Mod Installer](https://github.com/BrandenEK/Blasphemous.Modding.Installer) <br>
+Required dependencies:
+- [Modding API](https://github.com/BrandenEK/Blasphemous.ModdingAPI)
