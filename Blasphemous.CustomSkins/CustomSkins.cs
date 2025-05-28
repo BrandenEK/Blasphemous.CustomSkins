@@ -65,19 +65,24 @@ public class CustomSkins : BlasMod
 
     private IEnumerable<SkinInfo> LoadAllSkins()
     {
-        string skinsPath = Path.GetFullPath("Modding/skins/");
-        return Directory.GetDirectories(skinsPath).Select(LoadSkin);
+        string skinsDir = Path.Combine(FileHandler.ModdingFolder, "skins");
+        Directory.CreateDirectory(skinsDir);
+
+        return Directory.GetDirectories(skinsDir).Select(LoadSkin).Where(x => x != null);
     }
 
     private SkinInfo LoadSkin(string path)
     {
-        if (!File.Exists(path + "/info.txt") || !File.Exists(path + "/texture.png"))
+        string infoPath = Path.Combine(path, "info.txt");
+        string texturePath = Path.Combine(path, "texture.png");
+
+        if (!File.Exists(infoPath) || !File.Exists(texturePath))
             return null;
 
-        string text = File.ReadAllText(path + "/info.txt");
-        byte[] bytes = File.ReadAllBytes(path + "/texture.png");
+        string text = File.ReadAllText(infoPath);
+        byte[] bytes = File.ReadAllBytes(texturePath);
 
-        Texture2D tex = new Texture2D(256, 1, TextureFormat.ARGB32, false);
+        var tex = new Texture2D(256, 1, TextureFormat.ARGB32, false);
         tex.LoadImage(bytes);
         tex.filterMode = FilterMode.Point;
 
