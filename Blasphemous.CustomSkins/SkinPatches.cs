@@ -11,9 +11,11 @@ using UnityEngine.UI;
 
 namespace Blasphemous.CustomSkins;
 
-// Load custom skins from folder
+/// <summary>
+/// Load custom skins from folder
+/// </summary>
 [HarmonyPatch(typeof(ColorPaletteManager), nameof(ColorPaletteManager.Initialize))]
-class ColorPaletteManagerInit_Patch
+class ColorPaletteManager_Initialize_Patch
 {
     public static void Postfix(ColorPaletteDictionary ___palettes, Dictionary<string, bool> ___palettesStates)
     {
@@ -33,9 +35,11 @@ class ColorPaletteManagerInit_Patch
     }
 }
 
-// Create menu options for custom skins
+/// <summary>
+/// Create menu options for custom skins
+/// </summary>
 [HarmonyPatch(typeof(ExtrasMenuWidget), nameof(ExtrasMenuWidget.Awake))]
-class ExtrasMenuWidget_Patch
+class ExtrasMenuWidget_Awake_Patch
 {
     public static void Postfix(List<string> ___allSkins, List<ExtrasMenuWidget.SkinSelectorElement> ___skinSelectorDataElements, List<ExtrasMenuWidget.SkinSelectorElement> ___skinSelectorSelectionElements)
     {
@@ -108,9 +112,11 @@ class ExtrasMenuWidget_Patch
     }
 }
 
-// Add custom skins button allowed focus objects
+/// <summary>
+/// Add custom skins button allowed focus objects
+/// </summary>
 [HarmonyPatch(typeof(KeepFocus), nameof(KeepFocus.Update))]
-class KeepFocusSkins_Patch
+class KeepFocus_Update_Patch
 {
     public static void Prefix(KeepFocus __instance, List<GameObject> ___allowedObjects)
     {
@@ -122,9 +128,11 @@ class KeepFocusSkins_Patch
     }
 }
 
-// Display creator of each skin
+/// <summary>
+/// Display creator of each skin
+/// </summary>
 [HarmonyPatch(typeof(ExtrasMenuWidget), nameof(ExtrasMenuWidget.Option_OnSelectSkin))]
-class SelectSkin_Patch
+class ExtrasMenuWidget_Option_OnSelectSkin_Patch
 {
     public static bool Prefix(ExtrasMenuWidget __instance, int idx, List<string> ___allSkins)
     {
@@ -136,15 +144,18 @@ class SelectSkin_Patch
     }
 }
 
-// Use default skin if custom one is removed
+/// <summary>
+/// Use default skin if custom one is removed
+/// </summary>
 [HarmonyPatch(typeof(ColorPaletteManager), nameof(ColorPaletteManager.GetCurrentColorPaletteId))]
-class ColorPaletteManagerGet_Patch
+class ColorPaletteManager_GetCurrentColorPaletteId_Patch
 {
     public static void Postfix(ColorPaletteManager __instance, ColorPaletteDictionary ___palettes, ref string __result)
     {
         foreach (PalettesById palette in ___palettes.PalettesById)
         {
-            if (palette.id == __result) return;
+            if (palette.id == __result)
+                return;
         }
         __instance.SetCurrentColorPaletteId("PENITENT_DEFAULT");
         __result = "PENITENT_DEFAULT";
